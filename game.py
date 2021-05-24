@@ -193,11 +193,19 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
-    game.simulateManyGames(1, 10000)
-    ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
-    ticTacToeModel.train(game.getTrainingHistory())
+    game.simulateManyGames(1, 1000)
+    
+    import pickle
+    if os.path.exists("model.pkl"):
+        with open("model.pkl", "rb") as f:
+            ticTacToeModel = pickle.load(f, encoding="latin1")
+    else:
+        ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
+        ticTacToeModel.train(game.getTrainingHistory())
+        with open('model.pkl', 'wb') as f:
+            pickle.dump(ticTacToeModel, f, protocol=pickle.HIGHEST_PROTOCOL)
     print ("Simulating with Neural Network as X Player:")
-    game.simulateManyNeuralNetworkGames(PLAYER_X_VAL, 10000, ticTacToeModel)
+    game.simulateManyNeuralNetworkGames(PLAYER_X_VAL, 1000, ticTacToeModel)
     print("Simulating with Neural Network as O Player:")
-    game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 10000, ticTacToeModel)
+    game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 1000, ticTacToeModel)
 
