@@ -1,3 +1,7 @@
+import os
+
+os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
+
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.models import Sequential
