@@ -19,220 +19,220 @@ GAME_STATE_NOT_ENDED = 2
 
 class Game:
 
-    def __init__(self):
-        self.resetBoard()
-        self.trainingHistory = []
+	def __init__(self):
+		self.resetBoard()
+		self.trainingHistory = []
 
-    def resetBoard(self):
-        self.board = [
-            [0, 0, 0, 0],
-            [0, 0, 0, 0],
-            [0, 0, 0, 0],
-            [0, 0, 0, 0],
-        ]
-        self.boardHistory = []
+	def resetBoard(self):
+		self.board = [
+			[0, 0, 0, 0],
+			[0, 0, 0, 0],
+			[0, 0, 0, 0],
+			[0, 0, 0, 0],
+		]
+		self.boardHistory = []
 
-    def printBoard(self):
-        print(VERTICAL_SEPARATOR)
-        for i in range(len(self.board)):
-            print(' ', end='')
-            for j in range(len(self.board[i])):
-                if PLAYER_X_VAL == self.board[i][j]:
-                    print(PLAYER_X, end='')
-                elif PLAYER_O_VAL == self.board[i][j]:
-                    print(PLAYER_O, end='')
-                elif EMPTY_VAL == self.board[i][j]:
-                    print(EMPTY, end='')
-                print(HORIZONTAL_SEPARATOR, end='')
-            print(os.linesep)
-            print(VERTICAL_SEPARATOR)
+	def printBoard(self):
+		print(VERTICAL_SEPARATOR)
+		for i in range(len(self.board)):
+			print(' ', end='')
+			for j in range(len(self.board[i])):
+				if PLAYER_X_VAL == self.board[i][j]:
+					print(PLAYER_X, end='')
+				elif PLAYER_O_VAL == self.board[i][j]:
+					print(PLAYER_O, end='')
+				elif EMPTY_VAL == self.board[i][j]:
+					print(EMPTY, end='')
+				print(HORIZONTAL_SEPARATOR, end='')
+			print(os.linesep)
+			print(VERTICAL_SEPARATOR)
 
-    def getGameResult(self):
-        # Rows
-        for i in range(len(self.board)):
-            count = 0
-            candidate = self.board[i][0]
-            for j in range(len(self.board[i])):
-                if count > 2:
-                    return candidate
-                if candidate == EMPTY_VAL:
-                    candidate = self.board[i][j]
-                    continue
-                elif candidate != self.board[i][j]:
-                    candidate = self.board[i][j]
-                    count = 0
-                count += 1
-                
-        # Columns
-        for i in range(len(self.board)):
-            count = 0
-            candidate = self.board[0][i]
-            for j in range(len(self.board[i])):
-                if count > 2:
-                    return candidate
-                if candidate == EMPTY_VAL:
-                    candidate = self.board[j][i]
-                    continue
-                elif candidate != self.board[j][i]:
-                    candidate = self.board[j][i]
-                    count = 0
-                count += 1
-                
-        # First diagonal
-        candidate = self.board[0][0]
-        for i in range(len(self.board)):
-            if count > 2:
-                return candidate
-            if candidate == EMPTY_VAL:
-                candidate = self.board[i][i]
-                continue
-            elif candidate != self.board[i][i]:
-                candidate = self.board[i][i]
-                count = 0
-            count += 1
-            
-        # Second diagonal
-        candidate = self.board[0][3]
-        for i in range(len(self.board)):
-            if count > 2:
-                return candidate
-            if candidate == EMPTY_VAL:
-                candidate = self.board[i][len(self.board[i]) - i - 1]
-                continue
-            elif candidate != self.board[i][len(self.board[i]) - i - 1]:
-                candidate = self.board[i][len(self.board[i]) - i - 1]
-                count = 0
-            count += 1
-                
-        for i in range(len(self.board)):
-            for j in range(len(self.board[i])):
-                if self.board[i][j] == EMPTY_VAL:
-                    return GAME_STATE_NOT_ENDED
+	def getGameResult(self):
+		# Rows
+		for i in range(len(self.board)):
+			count = 0
+			candidate = self.board[i][0]
+			for j in range(len(self.board[i])):
+				if count > 2:
+					return candidate
+				if candidate == EMPTY_VAL:
+					candidate = self.board[i][j]
+					continue
+				elif candidate != self.board[i][j]:
+					candidate = self.board[i][j]
+					count = 0
+				count += 1
+				
+		# Columns
+		for i in range(len(self.board)):
+			count = 0
+			candidate = self.board[0][i]
+			for j in range(len(self.board[i])):
+				if count > 2:
+					return candidate
+				if candidate == EMPTY_VAL:
+					candidate = self.board[j][i]
+					continue
+				elif candidate != self.board[j][i]:
+					candidate = self.board[j][i]
+					count = 0
+				count += 1
+				
+		# First diagonal
+		candidate = self.board[0][0]
+		for i in range(len(self.board)):
+			if count > 2:
+				return candidate
+			if candidate == EMPTY_VAL:
+				candidate = self.board[i][i]
+				continue
+			elif candidate != self.board[i][i]:
+				candidate = self.board[i][i]
+				count = 0
+			count += 1
+			
+		# Second diagonal
+		candidate = self.board[0][3]
+		for i in range(len(self.board)):
+			if count > 2:
+				return candidate
+			if candidate == EMPTY_VAL:
+				candidate = self.board[i][len(self.board[i]) - i - 1]
+				continue
+			elif candidate != self.board[i][len(self.board[i]) - i - 1]:
+				candidate = self.board[i][len(self.board[i]) - i - 1]
+				count = 0
+			count += 1
+				
+		for i in range(len(self.board)):
+			for j in range(len(self.board[i])):
+				if self.board[i][j] == EMPTY_VAL:
+					return GAME_STATE_NOT_ENDED
 
-        return GAME_STATE_DRAW
-
-
-    def getAvailableMoves(self):
-        availableMoves = []
-        for i in range(len(self.board)):
-            for j in range(len(self.board[i])):
-                if (self.board[i][j]) == EMPTY_VAL:
-                    availableMoves.append([i, j])
-        return availableMoves
-
-    def addToHistory(self, board):
-        self.boardHistory.append(board)
-
-    def printHistory(self):
-        print(self.boardHistory)
-
-    def move(self, position, player):
-        availableMoves = self.getAvailableMoves()
-        for i in range(len(availableMoves)):
-            if position[0] == availableMoves[i][0] and position[1] == availableMoves[i][1]:
-                self.board[position[0]][position[1]] = player
-                self.addToHistory(copy.deepcopy(self.board))
+		return GAME_STATE_DRAW
 
 
-    def simulate(self, playerToMove):
-        while (self.getGameResult() == GAME_STATE_NOT_ENDED):
-            availableMoves = self.getAvailableMoves()
-            selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
-            self.move(selectedMove, playerToMove)
-            if playerToMove == PLAYER_X_VAL:
-                playerToMove = PLAYER_O_VAL
-            else:
-                playerToMove = PLAYER_X_VAL
-        # Get the history and build the training set
-        for historyItem in self.boardHistory:
-            self.trainingHistory.append((self.getGameResult(), copy.deepcopy(historyItem)))
+	def getAvailableMoves(self):
+		availableMoves = []
+		for i in range(len(self.board)):
+			for j in range(len(self.board[i])):
+				if (self.board[i][j]) == EMPTY_VAL:
+					availableMoves.append([i, j])
+		return availableMoves
 
-    def simulateNeuralNetwork(self, nnPlayer, model):
-        playerToMove = PLAYER_X_VAL
-        while (self.getGameResult() == GAME_STATE_NOT_ENDED):
-            availableMoves = self.getAvailableMoves()
-            if playerToMove == nnPlayer:
-                maxValue = 0
-                bestMove = availableMoves[0]
-                for availableMove in availableMoves:
-                    # get a copy of a board
-                    boardCopy = copy.deepcopy(self.board)
-                    boardCopy[availableMove[0]][availableMove[1]] = nnPlayer
-                    if nnPlayer == PLAYER_X_VAL:
-                        value = model.predict(boardCopy, 0)
-                    else:
-                        value = model.predict(boardCopy, 2)
-                    if value > maxValue:
-                        maxValue = value
-                        bestMove = availableMove
-                selectedMove = bestMove
-            else:
-                selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
-            self.move(selectedMove, playerToMove)
-            if playerToMove == PLAYER_X_VAL:
-                playerToMove = PLAYER_O_VAL
-            else:
-                playerToMove = PLAYER_X_VAL
+	def addToHistory(self, board):
+		self.boardHistory.append(board)
 
-    def getTrainingHistory(self):
-        return self.trainingHistory
+	def printHistory(self):
+		print(self.boardHistory)
 
-    def simulateManyGames(self, playerToMove, numberOfGames):
-        playerXWins = 0
-        playerOWins = 0
-        draws = 0
-        for i in range(numberOfGames):
-            self.resetBoard()
-            self.simulate(playerToMove)
-            if self.getGameResult() == PLAYER_X_VAL:
-                playerXWins = playerXWins + 1
-            elif self.getGameResult() == PLAYER_O_VAL:
-                playerOWins = playerOWins + 1
-            else: draws = draws + 1
-        totalWins = playerXWins + playerOWins + draws
-        print ('X Wins: ' + str(int(playerXWins * 100/totalWins)) + '%')
-        print('O Wins: ' + str(int(playerOWins * 100 / totalWins)) + '%')
-        print('Draws: ' + str(int(draws * 100 / totalWins)) + '%')
+	def move(self, position, player):
+		availableMoves = self.getAvailableMoves()
+		for i in range(len(availableMoves)):
+			if position[0] == availableMoves[i][0] and position[1] == availableMoves[i][1]:
+				self.board[position[0]][position[1]] = player
+				self.addToHistory(copy.deepcopy(self.board))
 
 
-    def simulateManyNeuralNetworkGames(self, nnPlayer, numberOfGames, model):
-        nnPlayerWins = 0
-        randomPlayerWins = 0
-        draws = 0
-        print ("NN player")
-        print (nnPlayer)
-        for i in range(numberOfGames):
-            self.resetBoard()
-            self.simulateNeuralNetwork(nnPlayer, model)
-            if self.getGameResult() == nnPlayer:
-                nnPlayerWins = nnPlayerWins + 1
-            elif self.getGameResult() == GAME_STATE_DRAW:
-                draws = draws + 1
-            else: randomPlayerWins = randomPlayerWins + 1
-        totalWins = nnPlayerWins + randomPlayerWins + draws
-        print ('X Wins: ' + str(int(nnPlayerWins * 100/totalWins)) + '%')
-        print('O Wins: ' + str(int(randomPlayerWins * 100 / totalWins)) + '%')
-        print('Draws: ' + str(int(draws * 100 / totalWins)) + '%')
+	def simulate(self, playerToMove):
+		while (self.getGameResult() == GAME_STATE_NOT_ENDED):
+			availableMoves = self.getAvailableMoves()
+			selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
+			self.move(selectedMove, playerToMove)
+			if playerToMove == PLAYER_X_VAL:
+				playerToMove = PLAYER_O_VAL
+			else:
+				playerToMove = PLAYER_X_VAL
+		# Get the history and build the training set
+		for historyItem in self.boardHistory:
+			self.trainingHistory.append((self.getGameResult(), copy.deepcopy(historyItem)))
+
+	def simulateNeuralNetwork(self, nnPlayer, model):
+		playerToMove = PLAYER_X_VAL
+		while (self.getGameResult() == GAME_STATE_NOT_ENDED):
+			availableMoves = self.getAvailableMoves()
+			if playerToMove == nnPlayer:
+				maxValue = 0
+				bestMove = availableMoves[0]
+				for availableMove in availableMoves:
+					# get a copy of a board
+					boardCopy = copy.deepcopy(self.board)
+					boardCopy[availableMove[0]][availableMove[1]] = nnPlayer
+					if nnPlayer == PLAYER_X_VAL:
+						value = model.predict(boardCopy, 0)
+					else:
+						value = model.predict(boardCopy, 2)
+					if value > maxValue:
+						maxValue = value
+						bestMove = availableMove
+				selectedMove = bestMove
+			else:
+				selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
+			self.move(selectedMove, playerToMove)
+			if playerToMove == PLAYER_X_VAL:
+				playerToMove = PLAYER_O_VAL
+			else:
+				playerToMove = PLAYER_X_VAL
+
+	def getTrainingHistory(self):
+		return self.trainingHistory
+
+	def simulateManyGames(self, playerToMove, numberOfGames):
+		playerXWins = 0
+		playerOWins = 0
+		draws = 0
+		for i in range(numberOfGames):
+			self.resetBoard()
+			self.simulate(playerToMove)
+			if self.getGameResult() == PLAYER_X_VAL:
+				playerXWins = playerXWins + 1
+			elif self.getGameResult() == PLAYER_O_VAL:
+				playerOWins = playerOWins + 1
+			else: draws = draws + 1
+		totalWins = playerXWins + playerOWins + draws
+		print ('X Wins: ' + str(int(playerXWins * 100/totalWins)) + '%')
+		print('O Wins: ' + str(int(playerOWins * 100 / totalWins)) + '%')
+		print('Draws: ' + str(int(draws * 100 / totalWins)) + '%')
+
+
+	def simulateManyNeuralNetworkGames(self, nnPlayer, numberOfGames, model):
+		nnPlayerWins = 0
+		randomPlayerWins = 0
+		draws = 0
+		print ("NN player")
+		print (nnPlayer)
+		for i in range(numberOfGames):
+			self.resetBoard()
+			self.simulateNeuralNetwork(nnPlayer, model)
+			if self.getGameResult() == nnPlayer:
+				nnPlayerWins = nnPlayerWins + 1
+			elif self.getGameResult() == GAME_STATE_DRAW:
+				draws = draws + 1
+			else: randomPlayerWins = randomPlayerWins + 1
+		totalWins = nnPlayerWins + randomPlayerWins + draws
+		print ('X Wins: ' + str(int(nnPlayerWins * 100/totalWins)) + '%')
+		print('O Wins: ' + str(int(randomPlayerWins * 100 / totalWins)) + '%')
+		print('Draws: ' + str(int(draws * 100 / totalWins)) + '%')
 
 if __name__ == "__main__":
-    game = Game()
-    
-    import pickle
-    if os.path.exists("model.pkl"):
-        with open("model.pkl", "rb") as f:
-            ticTacToeModel = pickle.load(f, encoding="latin1")
-    else:
-        game.simulateManyGames(1, 1000)
-        ticTacToeModel = TicTacToeModel(16, 3, 100, 32)
-        ticTacToeModel.train(game.getTrainingHistory())
-        with open('model.pkl', 'wb') as f:
-            pickle.dump(ticTacToeModel, f, protocol=pickle.HIGHEST_PROTOCOL)
-    print ("Simulating with Neural Network as X Player:")
-    game.simulateManyNeuralNetworkGames(PLAYER_X_VAL, 100, ticTacToeModel)
-    print("Simulating with Neural Network as O Player:")
-    game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 100, ticTacToeModel)
-    print ("Simulating w/out Neural Network as X Player:")
-    game.simulateManyGames(PLAYER_X_VAL, 100)
-    print("Simulating w/out Neural Network as O Player:")
-    game.simulateManyGames(PLAYER_O_VAL, 100)
+	game = Game()
+	
+	import pickle
+	if os.path.exists("model.pkl"):
+		with open("model.pkl", "rb") as f:
+			ticTacToeModel = pickle.load(f, encoding="latin1")
+	else:
+		game.simulateManyGames(1, 1000)
+		ticTacToeModel = TicTacToeModel(16, 3, 100, 32)
+		ticTacToeModel.train(game.getTrainingHistory())
+		with open('model.pkl', 'wb') as f:
+			pickle.dump(ticTacToeModel, f, protocol=pickle.HIGHEST_PROTOCOL)
+	print ("Simulating with Neural Network as X Player:")
+	game.simulateManyNeuralNetworkGames(PLAYER_X_VAL, 100, ticTacToeModel)
+	print("Simulating with Neural Network as O Player:")
+	game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 100, ticTacToeModel)
+	print ("Simulating w/out Neural Network as X Player:")
+	game.simulateManyGames(PLAYER_X_VAL, 100)
+	print("Simulating w/out Neural Network as O Player:")
+	game.simulateManyGames(PLAYER_O_VAL, 100)
 
