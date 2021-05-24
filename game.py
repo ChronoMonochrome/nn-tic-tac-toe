@@ -25,9 +25,10 @@ class Game:
 
     def resetBoard(self):
         self.board = [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 0]
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
         ]
         self.boardHistory = []
 
@@ -47,44 +48,66 @@ class Game:
             print(VERTICAL_SEPARATOR)
 
     def getGameResult(self):
+        # Rows
+        for i in range(len(self.board)):
+            count = 0
+            candidate = self.board[i][0]
+            for j in range(len(self.board[i])):
+                if count > 2:
+                    return candidate
+                if candidate == EMPTY_VAL:
+                    candidate = self.board[i][j]
+                    continue
+                elif candidate != self.board[i][j]:
+                    candidate = self.board[i][j]
+                    count = 0
+                count += 1
+                
+        # Columns
+        for i in range(len(self.board)):
+            count = 0
+            candidate = self.board[0][i]
+            for j in range(len(self.board[i])):
+                if count > 2:
+                    return candidate
+                if candidate == EMPTY_VAL:
+                    candidate = self.board[j][i]
+                    continue
+                elif candidate != self.board[j][i]:
+                    candidate = self.board[j][i]
+                    count = 0
+                count += 1
+                
+        # First diagonal
+        candidate = self.board[0][0]
+        for i in range(len(self.board)):
+            if count > 2:
+                return candidate
+            if candidate == EMPTY_VAL:
+                candidate = self.board[i][i]
+                continue
+            elif candidate != self.board[i][i]:
+                candidate = self.board[i][i]
+                count = 0
+            count += 1
+            
+        # Second diagonal
+        candidate = self.board[0][3]
+        for i in range(len(self.board)):
+            if count > 2:
+                return candidate
+            if candidate == EMPTY_VAL:
+                candidate = self.board[i][len(self.board[i]) - i - 1]
+                continue
+            elif candidate != self.board[i][len(self.board[i]) - i - 1]:
+                candidate = self.board[i][len(self.board[i]) - i - 1]
+                count = 0
+            count += 1
+                
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 if self.board[i][j] == EMPTY_VAL:
                     return GAME_STATE_NOT_ENDED
-
-        # Rows
-        for i in range(len(self.board)):
-            candidate = self.board[i][0]
-            for j in range(len(self.board[i])):
-                if candidate != self.board[i][j]:
-                    candidate = 0
-            if candidate != 0:
-                return candidate
-
-        # Columns
-        for i in range(len(self.board)):
-            candidate = self.board[0][i]
-            for j in range(len(self.board[i])):
-                if candidate != self.board[j][i]:
-                    candidate = 0
-            if candidate != 0:
-                return candidate
-
-        # First diagonal
-        candidate = self.board[0][0]
-        for i in range(len(self.board)):
-            if candidate != self.board[i][i]:
-                candidate = 0
-        if candidate != 0:
-            return candidate
-
-        # Second diagonal
-        candidate = self.board[0][2]
-        for i in range(len(self.board)):
-            if candidate != self.board[i][len(self.board[i]) - i - 1]:
-                candidate = 0
-        if candidate != 0:
-            return candidate
 
         return GAME_STATE_DRAW
 
@@ -199,17 +222,17 @@ if __name__ == "__main__":
         with open("model.pkl", "rb") as f:
             ticTacToeModel = pickle.load(f, encoding="latin1")
     else:
-		game.simulateManyGames(1, 1000)
-        ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
+        game.simulateManyGames(1, 1000)
+        ticTacToeModel = TicTacToeModel(16, 3, 100, 32)
         ticTacToeModel.train(game.getTrainingHistory())
         with open('model.pkl', 'wb') as f:
             pickle.dump(ticTacToeModel, f, protocol=pickle.HIGHEST_PROTOCOL)
     print ("Simulating with Neural Network as X Player:")
-    game.simulateManyNeuralNetworkGames(PLAYER_X_VAL, 1000, ticTacToeModel)
+    game.simulateManyNeuralNetworkGames(PLAYER_X_VAL, 100, ticTacToeModel)
     print("Simulating with Neural Network as O Player:")
-    game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 1000, ticTacToeModel)
+    game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 100, ticTacToeModel)
     print ("Simulating w/out Neural Network as X Player:")
-    game.simulateManyGames(PLAYER_X_VAL, 1000)
+    game.simulateManyGames(PLAYER_X_VAL, 100)
     print("Simulating w/out Neural Network as O Player:")
-    game.simulateManyGames(PLAYER_O_VAL, 1000)
+    game.simulateManyGames(PLAYER_O_VAL, 100)
 
